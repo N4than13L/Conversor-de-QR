@@ -1,12 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Generador de QR · Convierte enlaces en códigos QR</title>
+    <title>Convierte enlaces en códigos QR</title>
     <meta
       name="description"
-      content="Convierte enlaces y texto en códigos QR personalizados. Cambia colores, tamaño y añade tu logo. Descarga en PNG o SVG, sin subir datos a ningún servidor."
+      content="Convierte enlaces, texto, WhatsApp, WiFi, contactos, ubicaciones y eventos en códigos QR personalizados. Cambia colores, tamaño y añade tu logo. Descarga en PNG o SVG, sin subir datos a ningún servidor."
     />
     <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" content="#4f46e5" />
@@ -154,7 +154,9 @@
         stroke-linejoin="round"
       >
         <rect x="8" y="2" width="8" height="4" rx="1" />
-        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+        <path
+          d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+        />
       </symbol>
       <symbol
         id="icon-lock"
@@ -248,34 +250,363 @@
     <main class="layout">
       <section class="card editor" aria-labelledby="titulo">
         <div class="editor-head">
-          <p class="eyebrow">Conversor de enlaces</p>
+          <p class="eyebrow">Generador de códigos QR</p>
           <h1 id="titulo">Crea tu código QR</h1>
           <p class="muted">
-            Escribe o pega una URL y el QR se actualiza mientras escribes.
-            Personalízalo, descárgalo en alta calidad y guárdalo en tu historial.
+            Elige el tipo de contenido, rellena los datos y el QR se actualiza
+            mientras escribes. Personalízalo, descárgalo en alta calidad y
+            guárdalo en tu historial.
           </p>
         </div>
 
         <form id="qrForm" novalidate>
           <div class="field">
             <div class="label-row">
-              <label for="texto">Contenido del QR</label>
+              <label for="qrType">Tipo de QR</label>
               <span class="counter" id="charCount">0 caracteres</span>
             </div>
-            <textarea
-              id="texto"
-              name="texto"
-              rows="3"
-              placeholder="https://ejemplo.com"
-              spellcheck="false"
-              autocomplete="off"
-              aria-describedby="inputHint"
-            ></textarea>
-            <p class="hint" id="inputHint">
-              Si escribes un dominio sin <code>https://</code>, lo añadimos
-              automáticamente. Pulsa <kbd>Enter</kbd> para generar y
-              <kbd>Shift</kbd> + <kbd>Enter</kbd> para una nueva línea.
+            <select id="qrType" name="qrType">
+              <option value="url" selected>Enlace o texto</option>
+              <option value="whatsapp">WhatsApp</option>
+              <option value="social">Red social</option>
+              <option value="wifi">WiFi</option>
+              <option value="email">Email</option>
+              <option value="phone">Teléfono</option>
+              <option value="sms">SMS</option>
+              <option value="vcard">Contacto (vCard)</option>
+              <option value="location">Ubicación</option>
+              <option value="event">Evento</option>
+            </select>
+            <p class="hint">
+              Elige el tipo de contenido; el QR se actualiza mientras rellenas
+              los datos.
             </p>
+          </div>
+
+          <div class="type-panels" id="typePanels">
+            <div class="type-panel" data-type="url">
+              <div class="field">
+                <label for="texto">Enlace o texto</label>
+                <textarea
+                  id="texto"
+                  name="texto"
+                  rows="3"
+                  placeholder="https://ejemplo.com"
+                  spellcheck="false"
+                  autocomplete="off"
+                  aria-describedby="inputHint"
+                ></textarea>
+                <p class="hint" id="inputHint">
+                  Si escribes un dominio sin <code>https://</code>, lo añadimos
+                  automáticamente. Pulsa <kbd>Enter</kbd> para generar y
+                  <kbd>Shift</kbd> + <kbd>Enter</kbd> para una nueva línea.
+                </p>
+              </div>
+            </div>
+
+            <div class="type-panel" data-type="whatsapp" hidden>
+              <div class="field">
+                <label for="waPhone">Número de WhatsApp</label>
+                <input
+                  type="tel"
+                  id="waPhone"
+                  placeholder="+34 600 000 000"
+                  inputmode="tel"
+                  autocomplete="tel"
+                />
+                <p class="hint">
+                  Incluye el prefijo del país. Se abrirá un chat directo con ese
+                  número.
+                </p>
+              </div>
+              <div class="field">
+                <label for="waMessage">Mensaje (opcional)</label>
+                <textarea
+                  id="waMessage"
+                  rows="2"
+                  placeholder="Hola, me gustaría más información…"
+                ></textarea>
+              </div>
+            </div>
+
+            <div class="type-panel" data-type="social" hidden>
+              <div class="field-grid">
+                <div class="field">
+                  <label for="socialNetwork">Red social</label>
+                  <select id="socialNetwork">
+                    <option value="instagram" selected>Instagram</option>
+                    <option value="tiktok">TikTok</option>
+                    <option value="facebook">Facebook</option>
+                    <option value="x">X (Twitter)</option>
+                    <option value="telegram">Telegram</option>
+                    <option value="linkedin">LinkedIn (perfil)</option>
+                    <option value="youtube">YouTube</option>
+                    <option value="discord">Discord</option>
+                    <option value="threads">Threads</option>
+                    <option value="bluesky">Bluesky</option>
+                    <option value="pinterest">Pinterest</option>
+                    <option value="twitch">Twitch</option>
+                    <option value="spotify">Spotify</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="socialHandle">Usuario o enlace</label>
+                  <input
+                    type="text"
+                    id="socialHandle"
+                    placeholder="@usuario o https://…"
+                    autocomplete="off"
+                    spellcheck="false"
+                  />
+                </div>
+              </div>
+              <p class="hint">
+                Si pegas un enlace completo se usa tal cual; si escribes
+                <code>@usuario</code>, creamos el enlace del perfil.
+              </p>
+            </div>
+
+            <div class="type-panel" data-type="wifi" hidden>
+              <div class="field-grid">
+                <div class="field field-span-2">
+                  <label for="wifiSsid">Nombre de la red (SSID)</label>
+                  <input
+                    type="text"
+                    id="wifiSsid"
+                    placeholder="Mi red WiFi"
+                    autocomplete="off"
+                    spellcheck="false"
+                  />
+                </div>
+                <div class="field">
+                  <label for="wifiSecurity">Seguridad</label>
+                  <select id="wifiSecurity">
+                    <option value="WPA" selected>WPA / WPA2 / WPA3</option>
+                    <option value="WEP">WEP</option>
+                    <option value="nopass">Sin contraseña</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="wifiPassword">Contraseña</label>
+                  <input
+                    type="text"
+                    id="wifiPassword"
+                    placeholder="Contraseña de la red"
+                    autocomplete="off"
+                    spellcheck="false"
+                  />
+                </div>
+                <label class="checkbox field-span-2" for="wifiHidden">
+                  <input type="checkbox" id="wifiHidden" />
+                  <span>Red oculta</span>
+                </label>
+              </div>
+              <p class="hint">
+                La contraseña viaja dentro del QR y no se envía a ningún
+                servidor.
+              </p>
+            </div>
+
+            <div class="type-panel" data-type="email" hidden>
+              <div class="field-grid">
+                <div class="field field-span-2">
+                  <label for="emailTo">Dirección de email</label>
+                  <input
+                    type="email"
+                    id="emailTo"
+                    placeholder="nombre@ejemplo.com"
+                    autocomplete="email"
+                  />
+                </div>
+                <div class="field field-span-2">
+                  <label for="emailSubject">Asunto (opcional)</label>
+                  <input type="text" id="emailSubject" placeholder="Asunto" />
+                </div>
+                <div class="field field-span-2">
+                  <label for="emailBody">Mensaje (opcional)</label>
+                  <textarea
+                    id="emailBody"
+                    rows="3"
+                    placeholder="Escribe el mensaje…"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="type-panel" data-type="phone" hidden>
+              <div class="field">
+                <label for="phoneNumber">Número de teléfono</label>
+                <input
+                  type="tel"
+                  id="phoneNumber"
+                  placeholder="+34 600 000 000"
+                  inputmode="tel"
+                  autocomplete="tel"
+                />
+                <p class="hint">
+                  Incluye el prefijo del país. Al escanear se abrirá el marcador
+                  con el número listo para llamar.
+                </p>
+              </div>
+            </div>
+
+            <div class="type-panel" data-type="sms" hidden>
+              <div class="field">
+                <label for="smsNumber">Número de teléfono</label>
+                <input
+                  type="tel"
+                  id="smsNumber"
+                  placeholder="+34 600 000 000"
+                  inputmode="tel"
+                  autocomplete="tel"
+                />
+              </div>
+              <div class="field">
+                <label for="smsMessage">Mensaje (opcional)</label>
+                <textarea
+                  id="smsMessage"
+                  rows="2"
+                  placeholder="Texto del SMS…"
+                ></textarea>
+              </div>
+            </div>
+
+            <div class="type-panel" data-type="vcard" hidden>
+              <div class="field-grid">
+                <div class="field">
+                  <label for="vcardFirst">Nombre</label>
+                  <input type="text" id="vcardFirst" placeholder="Ana" />
+                </div>
+                <div class="field">
+                  <label for="vcardLast">Apellidos</label>
+                  <input type="text" id="vcardLast" placeholder="García" />
+                </div>
+                <div class="field">
+                  <label for="vcardOrg">Empresa (opcional)</label>
+                  <input type="text" id="vcardOrg" placeholder="Mi empresa" />
+                </div>
+                <div class="field">
+                  <label for="vcardTitle">Cargo (opcional)</label>
+                  <input type="text" id="vcardTitle" placeholder="Directora" />
+                </div>
+                <div class="field">
+                  <label for="vcardPhone">Teléfono (opcional)</label>
+                  <input
+                    type="tel"
+                    id="vcardPhone"
+                    placeholder="+34 600 000 000"
+                    inputmode="tel"
+                    autocomplete="tel"
+                  />
+                </div>
+                <div class="field">
+                  <label for="vcardEmail">Email (opcional)</label>
+                  <input
+                    type="email"
+                    id="vcardEmail"
+                    placeholder="ana@ejemplo.com"
+                    autocomplete="email"
+                  />
+                </div>
+                <div class="field field-span-2">
+                  <label for="vcardWebsite">Sitio web (opcional)</label>
+                  <input
+                    type="text"
+                    id="vcardWebsite"
+                    placeholder="https://ejemplo.com"
+                    autocomplete="url"
+                  />
+                </div>
+                <div class="field field-span-2">
+                  <label for="vcardAddress">Dirección (opcional)</label>
+                  <input
+                    type="text"
+                    id="vcardAddress"
+                    placeholder="Calle, número, ciudad"
+                  />
+                </div>
+              </div>
+              <p class="hint">
+                Se generará una tarjeta de contacto vCard 3.0 compatible con la
+                mayoría de agendas.
+              </p>
+            </div>
+
+            <div class="type-panel" data-type="location" hidden>
+              <div class="field">
+                <label for="locationQuery">Lugar o dirección</label>
+                <input
+                  type="text"
+                  id="locationQuery"
+                  placeholder="Calle Mayor 1, Madrid"
+                />
+              </div>
+              <div class="field-grid">
+                <div class="field">
+                  <label for="locationLat">Latitud (opcional)</label>
+                  <input
+                    type="text"
+                    id="locationLat"
+                    placeholder="40.4168"
+                    inputmode="decimal"
+                  />
+                </div>
+                <div class="field">
+                  <label for="locationLng">Longitud (opcional)</label>
+                  <input
+                    type="text"
+                    id="locationLng"
+                    placeholder="-3.7038"
+                    inputmode="decimal"
+                  />
+                </div>
+              </div>
+              <p class="hint">
+                Si rellenas latitud y longitud se usarán esas coordenadas; si
+                no, se buscará el lugar escrito.
+              </p>
+            </div>
+
+            <div class="type-panel" data-type="event" hidden>
+              <div class="field">
+                <label for="eventTitle">Título del evento</label>
+                <input
+                  type="text"
+                  id="eventTitle"
+                  placeholder="Nombre del evento"
+                />
+              </div>
+              <div class="field-grid">
+                <div class="field">
+                  <label for="eventStart">Inicio</label>
+                  <input type="datetime-local" id="eventStart" />
+                </div>
+                <div class="field">
+                  <label for="eventEnd">Fin (opcional)</label>
+                  <input type="datetime-local" id="eventEnd" />
+                </div>
+                <div class="field field-span-2">
+                  <label for="eventLocation">Lugar (opcional)</label>
+                  <input
+                    type="text"
+                    id="eventLocation"
+                    placeholder="Sala, dirección o enlace"
+                  />
+                </div>
+                <div class="field field-span-2">
+                  <label for="eventDetails">Descripción (opcional)</label>
+                  <textarea
+                    id="eventDetails"
+                    rows="2"
+                    placeholder="Detalles del evento…"
+                  ></textarea>
+                </div>
+              </div>
+              <p class="hint">
+                Al escanear se abrirá Google Calendar con el evento listo para
+                guardar.
+              </p>
+            </div>
           </div>
 
           <div class="form-actions">
@@ -330,7 +661,9 @@
             <div class="field">
               <div class="label-row">
                 <label for="margin">Margen</label>
-                <output class="value" id="marginValue" for="margin">16 px</output>
+                <output class="value" id="marginValue" for="margin"
+                  >16 px</output
+                >
               </div>
               <input
                 type="range"
@@ -382,7 +715,9 @@
               <input type="checkbox" id="transparent" />
               <span>
                 Fondo transparente
-                <span class="muted">(ideal para PNG/SVG sobre otros diseños)</span>
+                <span class="muted"
+                  >(ideal para PNG/SVG sobre otros diseños)</span
+                >
               </span>
             </label>
 
@@ -419,7 +754,8 @@
                 </div>
               </div>
               <p class="hint" id="logoHint" hidden>
-                Con logo se recomienda corrección H para mantener la legibilidad.
+                Con logo se recomienda corrección H para mantener la
+                legibilidad.
               </p>
             </div>
           </div>
@@ -450,7 +786,11 @@
         </section>
       </section>
 
-      <aside class="card preview" id="previewCard" aria-labelledby="previewTitle">
+      <aside
+        class="card preview"
+        id="previewCard"
+        aria-labelledby="previewTitle"
+      >
         <div class="preview-head">
           <h2 id="previewTitle">Vista previa</h2>
           <span class="badge" id="sizeBadge">—</span>
@@ -481,7 +821,12 @@
         ></p>
 
         <div class="export-actions">
-          <button type="button" class="btn btn-primary" id="downloadPng" disabled>
+          <button
+            type="button"
+            class="btn btn-primary"
+            id="downloadPng"
+            disabled
+          >
             <svg class="icon" aria-hidden="true">
               <use href="#icon-download"></use>
             </svg>

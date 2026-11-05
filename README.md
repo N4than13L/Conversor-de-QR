@@ -1,10 +1,14 @@
-# QR Studio · Conversor de enlaces a códigos QR
+# QR Studio · Generador de códigos QR
 
-Aplicación web para convertir enlaces o texto en códigos QR personalizados. Funciona
-por completo en el navegador: **ningún dato se envía a un servidor**.
+Aplicación web para convertir enlaces, texto y datos de contacto en códigos QR
+personalizados. Funciona por completo en el navegador: **ningún dato se envía a un
+servidor**.
 
 ## Funcionalidades
 
+- **Tipos de contenido:** enlace o texto, WhatsApp, red social, WiFi, email,
+  teléfono, SMS, contacto vCard, ubicación y evento. Cada tipo tiene su propio
+  formulario, validación y formato estándar.
 - **Vista previa en vivo:** el QR se actualiza mientras escribes.
 - **Vista previa móvil flotante:** en pantallas pequeñas, un mini QR fijo sigue tus
   cambios mientras te desplazas por la personalización o el historial.
@@ -19,8 +23,8 @@ por completo en el navegador: **ningún dato se envía a un servidor**.
   - logo central (ajusta la corrección a H automáticamente).
 - **Exportación:** descarga en PNG o SVG, copia la imagen al portapapeles, comparte o
   imprime.
-- **Historial local:** guarda hasta 20 códigos en `localStorage`, con favoritos y
-  opción de borrar.
+- **Historial local:** guarda hasta 20 códigos en `localStorage` con su tipo,
+  etiqueta y campos, además de favoritos y opción de borrar.
 - **Modo claro/oscuro:** respeta la preferencia del sistema y recuerda tu elección.
 - **Accesibilidad:** etiquetas, foco visible, mensajes con `aria-live` y soporte para
   `prefers-reduced-motion`.
@@ -54,7 +58,6 @@ incluida localmente para que la app no dependa de un CDN.
 
 ## Próximos pasos posibles
 
-- Añadir tipos de QR: WiFi, email, teléfono, SMS, WhatsApp, vCard, ubicación y evento.
 - Escanear QR desde una imagen o la cámara.
 - Convertir la app en PWA para usarla offline e instalarla.
 - Generación por lotes desde un CSV.
